@@ -1,0 +1,78 @@
+{% extends "quiz_app/home.html" %}
+{% block title %}{{ quiz.title }} - Take Quiz{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">{{ quiz.title }}</h2>
+  <p class="text-muted text-center">{{ quiz.description }}</p>
+
+  <!-- ⏳ Timer Display -->
+  <div class="text-end mb-3">
+    <strong>Time Left: <span id="timer" class="text-danger fw-bold"></span></strong>
+  </div>
+
+  <form method="POST" action="{% url 'submit_quiz' quiz.id %}" id="quiz-form">
+    {% csrf_token %}
+
+    {% if questions %}
+      <ol class="list-group list-group-numbered">
+        {% for q in questions %}
+          <li class="list-group-item">
+            <p><strong>Q{{ forloop.counter }}:</strong> {{ q.text }}</p>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="question_{{ q.id }}" value="A" required>
+              <label class="form-check-label">A: {{ q.option_a }}</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="question_{{ q.id }}" value="B">
+              <label class="form-check-label">B: {{ q.option_b }}</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="question_{{ q.id }}" value="C">
+              <label class="form-check-label">C: {{ q.option_c }}</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="question_{{ q.id }}" value="D">
+              <label class="form-check-label">D: {{ q.option_d }}</label>
+            </div>
+          </li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <p class="text-center">No questions have been added to this quiz yet.</p>
+    {% endif %}
+
+    {% if questions %}
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+      </div>
+    {% endif %}
+  </form>
+
+  <div class="text-center mt-3">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+  </div>
+</div>
+
+<!-- ⏳ JavaScript Timer Script -->
+<script>
+  let seconds = {{ quiz.time_limit|default:10 }} * 60;  // Default to 10 minutes if not set
+  const timerDisplay = document.getElementById('timer');
+  const quizForm = document.getElementById('quiz-form');
+
+  function updateTimer() {
+    const min = Math.floor(seconds / 60);
+    const sec = seconds % 60;
+    timerDisplay.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+    if (seconds > 0) {
+      seconds--;
+      setTimeout(updateTimer, 1000);
+    } else {
+      alert("Time is up! Submitting your quiz.");
+      quizForm.submit();
+    }
+  }
+
+  updateTimer();
+</script>
+{% endblock %}

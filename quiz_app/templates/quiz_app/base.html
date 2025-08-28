@@ -1,0 +1,37 @@
+{% extends "quiz_app/home.html" %}
+{% block body %}
+{% if user.is_authenticated %}
+  <div class="container text-center my-5">
+
+    <h1 class="mb-5">Welcome to Test Series</h1>
+
+    <div class="row justify-content-center g-4">
+
+      <!-- Create Quiz Button -->
+      <div class="col-12 col-md-5">
+        <div class="p-4 bg-light rounded shadow-sm">
+          <h3>Create a New Quiz</h3>
+          <p>You can create your own quiz and share with others.</p>
+          <a href="{% url 'create_quiz' %}" class="btn btn-primary">Create Quiz</a>
+        </div>
+      </div>
+
+      <!-- Take Quiz Button -->
+      <div class="col-12 col-md-5">
+        <div class="p-4 bg-light rounded shadow-sm">
+          <h3>Take a Quiz</h3>
+          <p>Ready to test your knowledge? Start a quiz now!</p>
+         <a href="{% url 'dashboard'  %}" class="btn btn-primary">take quiz</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  {% else %}{
+     <div class="container text-center my-5">
+
+    <h1 class="mb-5">Welcome to Test Series</h1>
+     </div>
+  }
+{% endif %}
+{% endblock %}

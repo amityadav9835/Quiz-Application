@@ -1,0 +1,36 @@
+{% extends "quiz_app/home.html" %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="content-wrapper">
+    <h2 class="text-center mb-4">Sign Up</h2>
+
+    <!-- Show form errors -->
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        <ul>
+          {% for field in form %}
+            {% for error in field.errors %}
+              <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <!-- Signup Form -->
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="text-center mt-3">
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+      </div>
+    </form>
+
+    <p class="text-center mt-3">
+      Already have an account? <a href="{% url 'login' %}">Login here</a>.
+    </p>
+  </div>
+</div>
+{% endblock %}

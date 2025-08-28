@@ -1,0 +1,44 @@
+{% extends "quiz_app/home.html" %}
+{% block title %}{{ user.username }}'s Quiz Summary{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">📊 {{ user.get_full_name|default:user.username }}'s Quiz Summary</h2>
+
+  {% if results %}
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>Quiz</th>
+          <th>Score</th>
+          <th>Total</th>
+          <th>Percentage</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for result in results %}
+        <tr>
+          <td>{{ result.quiz.title }}</td>
+          <td>{{ result.score }}</td>
+          <td>{{ result.total }}</td>
+         <td>{{ result.percentage|floatformat:2 }}%</td>
+          <td>{{ result.submitted_at|date:"d M Y" }}</td>
+          <td>
+            <a href="{% url 'view_result_detail' result.quiz.id %}" class="btn btn-sm btn-outline-info">View Answers</a>
+
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="text-center text-muted">You haven’t taken any quizzes yet.</p>
+  {% endif %}
+
+  <div class="text-center mt-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

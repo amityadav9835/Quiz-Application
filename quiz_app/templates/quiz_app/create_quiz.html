@@ -1,0 +1,11 @@
+{% extends "quiz_app/home.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Create Quiz</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Next: Add Questions</button>
+  </form>
+</div>
+{% endblock %}
