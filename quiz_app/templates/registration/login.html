@@ -4,12 +4,12 @@
 {% block title %}Login Page{% endblock %}
 
 {% block content %}
-<div class="login-page">
-  <div class="login-box shadow-lg rounded">
-
+<div class="login-wrapper d-flex justify-content-center align-items-center">
+  <div class="card login-card shadow-lg d-flex flex-row">
+    
     <!-- Left Side: Form -->
-    <div class="form-section p-5">
-      <h3 class="text-center mb-4 fw-bold">Welcome Back!</h3>
+    <div class="form-section p-5 flex-fill bg-white">
+      <h3 class="text-center mb-4 fw-bold text-primary">Welcome Back!</h3>
 
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
@@ -24,25 +24,32 @@
         </div>
 
         <div class="text-center mt-4">
-          <button type="submit" class="btn btn-primary rounded-pill px-5 py-2">Login</button>
+          <button type="submit" class="btn btn-gradient px-5 py-2">Login</button>
         </div>
       </form>
 
-      <p class="text-center mt-3">
-        Don’t have an account? <a href="{% url 'signup' %}" class="fw-bold">Register</a>
+      <p class="text-center mt-3 text-muted">
+        Don’t have an account? <a href="{% url 'signup' %}" class="fw-bold text-decoration-none">Register</a>
       </p>
 
       <!-- Social icons -->
-      <div class="text-center mt-4">
-        <a href="#"><i class="fab fa-facebook fa-lg mx-2 text-primary"></i></a>
-        <a href="#"><i class="fab fa-whatsapp fa-lg mx-2 text-success"></i></a>
-        <a href="#"><i class="fab fa-telegram fa-lg mx-2 text-info"></i></a>
+      <div class="d-flex justify-content-center mt-4 social-icons">
+        <a href="#"><i class="fab fa-facebook fa-lg mx-2"></i></a>
+        <a href="#"><i class="fab fa-whatsapp fa-lg mx-2"></i></a>
+        <a href="#"><i class="fab fa-telegram fa-lg mx-2"></i></a>
       </div>
     </div>
 
-    <!-- Right Side: Image -->
-    <div class="image-section d-flex justify-content-center align-items-center">
-      <img src="{% static 'images/login-illustration.png' %}" alt="Login Illustration" class="img-fluid">
+    <!-- Right Side: Illustration -->
+    <div class="flex-fill d-flex align-items-center justify-content-center login-illustration">
+      <div class="overlay"></div>
+      <div class="text-center text-white">
+        <h3 class="fw-bold">Welcome to Quiz Master 🎯</h3>
+        <p class="lead">Challenge yourself, learn, and have fun!</p>
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
+             alt="Quiz Illustration" 
+             style="max-width: 70%; height: auto; margin-top: 1rem;">
+      </div>
     </div>
 
   </div>
@@ -52,43 +59,75 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-/* Full background */
-.login-page {
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #e9ecfc; /* Light background like design */
+/* Background */
+.login-wrapper {
+  min-height: 100vh;
+  background: url("https://images.unsplash.com/photo-1606326608690-4e0281b1e588?q=80&w=2070&auto=format&fit=crop") no-repeat center center fixed;
+  background-size: cover;
+  padding: 2rem;
 }
 
-/* Center box */
-.login-box {
-  display: flex;
-  width: 950px;
-  height: 600px;
-  background: #fff;
-  border-radius: 15px;
+/* Card */
+.login-card {
+  border-radius: 20px;
   overflow: hidden;
+  max-width: 950px;
+  width: 100%;
+  backdrop-filter: blur(6px);
+}
+
+/* Buttons with gradient */
+.btn-gradient {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #2575fc, #6a11cb);
+  transform: scale(1.05);
+}
+
+/* Social icons */
+.social-icons a {
+  color: #333;
+  font-size: 1.3rem;
+  transition: 0.3s;
+}
+.social-icons a:hover {
+  color: #2575fc;
+  transform: scale(1.2);
+}
+
+/* Right illustration section */
+.login-illustration {
+  position: relative;
+  background: url("https://cdn.pixabay.com/photo/2017/08/30/01/05/quiz-2698152_1280.jpg") no-repeat center center;
+  background-size: cover;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Overlay effect */
+.login-illustration .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 60, 0.7);
+}
+.login-illustration > div {
+  position: relative;
+  z-index: 2;
 }
 
 /* Left form */
 .form-section {
   flex: 1;
-  background-color: #f4f6ff;
+  background-color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-/* Right image */
-.image-section {
-  flex: 1;
-  background: #a5a6f6; /* Purple like your design */
-}
-.image-section img {
-  max-width: 100%;
-  height: auto;
 }
 </style>
 {% endblock %}

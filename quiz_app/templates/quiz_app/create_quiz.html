@@ -1,11 +1,74 @@
 {% extends "quiz_app/home.html" %}
+{% block title %}Create Quiz{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-  <h2>Create Quiz</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Next: Add Questions</button>
-  </form>
+<!-- Background Section -->
+ <style>
+  /* Background with gradient + image */
+.quiz-bg {
+  min-height: 100vh;
+  background: linear-gradient(rgba(0, 0, 50, 0.7), rgba(0, 0, 50, 0.7)),
+              url("https://images.unsplash.com/photo-1553532435-93d6ad57af70?q=80&w=2070&auto=format&fit=crop")
+              no-repeat center center fixed;
+  background-size: cover;
+  padding: 2rem;
+}
+
+/* Card */
+.card {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* Form field styling */
+form p {
+  margin-bottom: 1rem;
+}
+form input, form select, form textarea {
+  border-radius: 10px !important;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease-in-out;
+}
+form input:focus, form select:focus, form textarea:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 6px rgba(13,110,253,0.3);
+}
+
+ </style>
+<div class="quiz-bg d-flex align-items-center justify-content-center">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+
+        <!-- Card -->
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-body p-5">
+
+            <!-- Heading -->
+            <h2 class="text-center mb-4 fw-bold text-primary">
+              ✨ Create a New Quiz
+            </h2>
+            <p class="text-muted text-center mb-4">
+              Fill in the details below to start building your quiz
+            </p>
+
+            <!-- Form -->
+            <form method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                {{ form.as_p }}
+              </div>
+              <button type="submit" class="btn btn-lg btn-primary w-100 rounded-pill shadow-sm">
+                Next: Add Questions ➡
+              </button>
+            </form>
+
+          </div>
+        </div>
+        <!-- End Card -->
+
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

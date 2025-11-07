@@ -1,37 +1,185 @@
 {% extends "quiz_app/home.html" %}
-{% block body %}
-{% if user.is_authenticated %}
-  <div class="container text-center my-5">
+{% block title %}Welcome | Quiz App{% endblock %}
+{% block content %}
 
-    <h1 class="mb-5">Welcome to Test Series</h1>
+<style>
+  /* Hero Carousel */
+  .carousel-item {
+    height: 100vh; /* full screen height */
+    width: 100vw;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+  }
 
-    <div class="row justify-content-center g-4">
+  /* Dark overlay for text readability */
+  .carousel-item::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1;
+  }
 
-      <!-- Create Quiz Button -->
-      <div class="col-12 col-md-5">
-        <div class="p-4 bg-light rounded shadow-sm">
-          <h3>Create a New Quiz</h3>
-          <p>You can create your own quiz and share with others.</p>
-          <a href="{% url 'create_quiz' %}" class="btn btn-primary">Create Quiz</a>
-        </div>
+  /* Hero content (overlay text) */
+  .hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-align: center;
+    color: #fff;
+    padding: 0 20px;
+    animation: fadeInUp 1.5s ease;
+  }
+
+  .hero-content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+  }
+
+  .hero-btn {
+    background: #28a745;
+    border: none;
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+  }
+  .hero-btn:hover {
+    background: #218838;
+    transform: scale(1.05);
+  }
+
+  @keyframes fadeInUp {
+    0% {opacity: 0; transform: translate(-50%, -40%);}
+    100% {opacity: 1; transform: translate(-50%, -50%);}
+  }
+
+  /* Features Section */
+  .features {
+    background: #f8f9fa;
+    padding: 80px 20px;
+    text-align: center;
+  }
+
+  .features h2 {
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    font-weight: 700;
+    color: #333;
+  }
+
+  .feature-box {
+    background: #fff;
+    padding: 30px 20px;
+    margin: 15px;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+
+  .feature-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  }
+
+  .feature-box img {
+    max-width: 80px;
+    margin-bottom: 20px;
+    transition: transform 0.3s;
+  }
+
+  .feature-box:hover img {
+    transform: scale(1.1);
+  }
+
+  .feature-box h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #222;
+  }
+
+  .feature-box p {
+    color: #666;
+    font-size: 1rem;
+  }
+</style>
+
+
+<!-- ✅ Hero Carousel -->
+<div  id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-bs-interval="2000"
+         style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=1800');">
+      <div class="hero-content">
+        <h1>Powerful Online Test Maker</h1>
+        <p>Create, share, and analyze quizzes with ease</p>
+        <a style="text-decoration:none;" href="{% url 'create_quiz' %}" class="hero-btn">Get Started</a>
       </div>
-
-      <!-- Take Quiz Button -->
-      <div class="col-12 col-md-5">
-        <div class="p-4 bg-light rounded shadow-sm">
-          <h3>Take a Quiz</h3>
-          <p>Ready to test your knowledge? Start a quiz now!</p>
-         <a href="{% url 'dashboard'  %}" class="btn btn-primary">take quiz</a>
-        </div>
+    </div>
+    <div  class="carousel-item" data-bs-interval="2000"
+         style="background-image: url('https://images.unsplash.com/photo-1551818567-d49550a81408?w=1800');">
+      <div class="hero-content">
+        <h1>Interactive Quizzes</h1>
+        <p>Engage learners with multiple question types</p>
+        <a style="text-decoration:none;"href="{% url 'dashboard' %}" class="hero-btn">Take a Quiz</a>
       </div>
-
+    </div>
+    <div class="carousel-item"
+         style="background-image: url('https://images.unsplash.com/photo-1564207550505-5135c0fe4e76?w=1800');">
+      <div class="hero-content">
+        <h1>Instant Reports</h1>
+        <p>Analyze results with detailed insights</p>
+        <a style="text-decoration:none;" href="{% url 'dashboard' %}" class="hero-btn">View Results</a>
+      </div>
     </div>
   </div>
-  {% else %}{
-     <div class="container text-center my-5">
 
-    <h1 class="mb-5">Welcome to Test Series</h1>
-     </div>
-  }
-{% endif %}
+  <!-- Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+
+<!-- ✅ Features Section -->
+<section class="features container-fluid">
+  <h2>Why Choose QuizApp?</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-4 col-sm-6 feature-box">
+      <a href="{% url 'create_quiz' %}" style="text-decoration: none; color: inherit;">
+        <img src="https://img.icons8.com/color/96/000000/add-file.png" alt="Create Quiz">
+        <h3>Create</h3>
+        <p>Quickly create quizzes using multiple question types and formatting options.</p>
+      </a>
+    </div>
+    <div class="col-md-4 col-sm-6 feature-box">
+      <a href="{% url 'dashboard'%}" style="text-decoration: none; color: inherit;">
+        <img src="https://png.pngtree.com/png-clipart/20230804/original/pngtree-vector-quiz-icon-qcm-blue-logo-vector-picture-image_9512850.png" alt="Publish Quiz">
+        <h3>Give Quiz</h3>
+        <p>Publish quizzes privately or share with a single link and registration page.</p>
+      </a>
+    </div>
+    <div class="col-md-4 col-sm-6 feature-box">
+      <img src="https://img.icons8.com/color/96/000000/combo-chart.png" alt="Analyze Results">
+      <h3>Analyze</h3>
+      <p>Instantly grade results and generate powerful reports for deeper insights.</p>
+    </div>
+  </div>
+</section>
+
 {% endblock %}

@@ -1,52 +1,85 @@
-# Quiz Application (Django) – with Timed MCQs & ML‑Powered Proctoring
+# Quiz Application (Django) – Timed MCQs with Basic Proctoring
 
-A production‑ready Django-based quiz platform featuring secure user authentication, timed multiple‑choice assessments, real‑time session management (auto‑submit on expiry), and ML-powered facial detection for remote proctoring.
+A Django-based quiz platform where users can register, attempt multiple-choice quizzes within a time limit, and receive instant results. The app also includes basic browser-based proctoring (fullscreen enforcement and tab-switch detection) to maintain quiz integrity.
+
+---
+
+## 🧠 Distinctiveness and Complexity
+
+This project satisfies the **CS50W distinctiveness and complexity** requirements because:
+
+* Unlike the e-commerce and social network projects from the course, this is a **quiz/assessment system**, designed specifically for online exams and timed evaluations.
+* It implements **timed MCQs with auto-submission**, which adds backend logic (quiz timing, submission validation) and frontend interaction (JavaScript countdown, autosubmit on timeout).
+* The project integrates **Django models**, forms, authentication, and **JavaScript interactivity** (timer, alerts, and restricted actions during the quiz).
+* Each quiz supports **multiple questions and options**, dynamic question loading, and result calculation with real-time validation.
+* The system is **mobile-responsive**, built with Django templates and CSS media queries.
+* It demonstrates **full-stack functionality**:
+  - Django models, views, templates, and URL routing
+  - JavaScript timers and user-interaction monitoring on the client side
+  - Secure user authentication and data management using Django’s `User` model
+
+In short, this project combines both **backend complexity** (data modeling, authentication, quiz logic) and **frontend logic** (timed submission, input validation) to deliver a fully functional, distinct web application.
 
 ---
 
 ## ✨ Features
 
-* **Authentication & Roles**: Secure sign up / login (Django auth). Roles for **Admin/Instructor** and **Student**.
-* **Quiz Builder**: Create quizzes with sections, MCQs (single/multi-select), points, negative marking (optional), and time limit.
-* **Taking Quizzes**: Clean UI, per-quiz timer, autosave of answers, prevention of multiple attempts (configurable), and **automatic submission** when time expires.
-* **Real‑Time Management**: Live session tracking; instructor can monitor attempt status.
-* **Proctoring (ML)**: Browser camera capture + backend checks for **face presence**, **multiple faces**, and **face mismatch** (optional). Suspicious events are logged and can auto‑submit based on policy.
-* **Integrity Controls**: Fullscreen enforcement (optional), tab‑switch/blur detection, copy/paste prevention (optional).
-* **Results & Analytics**: Instant scores (configurable), per‑question breakdown, export to CSV.
-* **API-Ready**: JSON endpoints for SPA/mobile integrations.
+* **User Authentication** – Secure login and registration (using Django’s built-in auth system)
+* **Create & Manage Quizzes** – Admins or creators can add quizzes with multiple questions and options  
+* **Timed Quizzes** – Each quiz has a defined time limit; auto-submission when time expires  
+* **Answer Validation** – Correct answers stored in the database; automatic scoring after submission  
+* **Results Page** – Displays total score, correct answers, and percentage achieved  
+* **Basic Proctoring** – Detects tab switch or fullscreen exit (via JavaScript warnings)  
+* **Mobile-Responsive UI** – Works smoothly across devices  
 
 ---
 
 ## 🧱 Tech Stack
 
-* **Backend**: Django, Django REST Framework (optional), Celery/Redis (optional for async tasks)
-* **DB**: SQLite (dev) → PostgreSQL/MySQL (prod)
-* **Frontend**: Django templates (or your SPA)
-* **Proctoring**: WebRTC `getUserMedia` on client; OpenCV/MediaPipe/face-recognition model on server
-* **Realtime** (optional): Django Channels + Redis
+* **Backend** – Django (Python)
+* **Frontend** – HTML, CSS, JavaScript (for timers and proctoring)
+* **Database** – SQLite (for development)
+* **Auth** – Django’s built-in `User` model and session management
 
 ---
 
-## 📦 Project Structure (example)
+## 🗃️ Data Model (from `models.py`)
+
+* `Quiz`: Stores quiz details (title, description, creator, time limit)
+* `Question`: Stores questions, options (A–D), and correct answers
+* `Answer`: Stores user responses for each question
+* `QuizResult`: Stores final score, total marks, and timestamp
+
+---
+
+## 📁 File Overview
 
 ```
 quiz_app/
-├─ manage.py
-├─ requirements.txt
-├─ .env.example
-├─ core/                 # settings, urls, asgi/wsgi
-├─ accounts/             # auth, roles, profiles
-├─ quizzes/              # quiz, question, option, attempt models
-├─ proctoring/           # camera capture endpoints, validators
-├─ api/                  # DRF serializers & viewsets (optional)
-└─ static/ templates/    # assets & HTML templates
+├─ manage.py                  # Django management script
+├─ requirements.txt           # Dependencies list
+├─ core/                      # Project settings and URLs
+│   ├─ settings.py
+│   ├─ urls.py
+│   ├─ wsgi.py
+│   └─ asgi.py
+├─ quizzes/                   # Main app
+│   ├─ models.py              # Quiz, Question, Answer, QuizResult models
+│   ├─ views.py               # Logic for creating, attempting, and viewing results
+│   ├─ urls.py                # App-specific URL routes
+│   ├─ templates/quizzes/     # HTML templates (list, attempt, result, etc.)
+│   ├─ static/quizzes/        # JS (timers, proctoring), CSS files
+│   └─ forms.py               # Django forms for quiz creation (if applicable)
+├─ templates/                 # Base templates
+├─ static/                    # Global static files
+└─ db.sqlite3                 # SQLite database (auto-created)
 ```
 
 ---
 
-## 🚀 Quickstart
+## 🚀 How to Run Locally
 
-### 1) Clone & create environment
+### 1. Clone and Setup Environment
 
 ```bash
 git clone <your-repo-url> quiz-app
@@ -56,161 +89,102 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2) Configure environment
-
-Create `.env` (or export env vars) based on `.env.example`:
-
-```
-# Core
-SECRET_KEY=change-me
-DEBUG=True
-ALLOWED_HOSTS=*
-
-# Database (SQLite by default; for Postgres use DATABASE_URL)
-# DATABASE_URL=postgres://user:pass@host:5432/dbname
-
-# Proctoring
-PROCTORING_ENABLED=true
-PROCTORING_FRAME_INTERVAL_MS=1500
-PROCTORING_MAX_WARNINGS=3
-PROCTORING_AUTO_SUBMIT=true
-FACE_MODEL_PATH=proctoring/models/shape_predictor.dat
-FACE_RECOGNITION_ENABLED=false
-
-# Channels/Redis (optional)
-# CHANNEL_LAYERS=redis://localhost:6379/1
-```
-
-### 3) Migrate & create admin
+### 2. Migrate Database
 
 ```bash
 python manage.py migrate
+```
+
+### 3. Create a Superuser (for quiz creation)
+
+```bash
 python manage.py createsuperuser
 ```
 
-### 4) Run
+### 4. Run the Development Server
 
 ```bash
 python manage.py runserver
 ```
 
-Open: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+Then open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
 
 ---
 
 ## 👩‍🏫 Usage
 
-### Instructors
+### For Admin/Creator
+1. Log in as superuser from the Django admin panel (`/admin/`)
+2. Create quizzes and add questions (with correct answers and time limits)
+3. Share quiz URLs with users or students
 
-1. Login as admin → **Quizzes → Create**
-2. Add questions (single/multi‑select), set **time limit**, optional **negative marking**
-3. Publish and share the join link/access code
-
-### Students
-
-1. Sign up / Login
-2. Open quiz → **Allow camera** (if proctoring enabled)
-3. Stay focused: switching tabs/fullscreen may trigger warnings
-4. Answers autosave; on time expiry the attempt **auto‑submits**
-
----
-
-## 🛡️ Proctoring (How it works)
-
-* **Client**: Uses `navigator.mediaDevices.getUserMedia({ video: true })` to access the webcam. Periodically captures frames (canvas snapshots) and posts to `/proctoring/frame/`.
-* **Server**: Runs lightweight models (OpenCV/MediaPipe). Checks:
-
-  * **Face present**: No face → warning
-  * **Multiple faces**: >1 face → warning
-  * **Face mismatch (optional)**: Compare embeddings with enrolled face
-  * **Environment anomalies (optional)**: sudden lighting/pose extremes
-* **Policy**: After `PROCTORING_MAX_WARNINGS`, system can **auto‑submit** or **flag** the attempt for manual review.
-* **Privacy**: Frames are processed transiently; storage is **configurable** (default: not persisted). Show a consent notice before the quiz.
-
-> ⚠️ **Disclaimer**: Computer vision signals are probabilistic. Keep a manual review path and accessibility alternative for legitimate cases (e.g., lighting, hardware limits).
+### For Students
+1. Sign up and log in
+2. Choose a quiz and start it
+3. Answer MCQs before the timer ends
+4. Quiz auto-submits when time runs out or user manually submits
+5. View score and percentage on the results page
 
 ---
 
-## 🔒 Security Best Practices
+## 🕒 Timed Quiz & Auto-Submission
 
-* Use HTTPS (TLS), secure cookies, CSRF protection (Django default)
-* Rotate `SECRET_KEY` and keep it out of VCS
-* Set `DEBUG=False` and proper `ALLOWED_HOSTS` in production
-* Validate quiz/attempt ownership on every request
-* Rate‑limit proctoring frame uploads (interval + size caps)
-* CORS/Content‑Security‑Policy if exposing APIs
+The quiz page includes a **JavaScript countdown timer** that:
+* Starts when the quiz begins  
+* Shows remaining time  
+* Auto-submits when time expires  
+* Prevents multiple submissions  
 
----
-
-## 🗃️ Data Model (simplified)
-
-* `Quiz(title, description, time_limit, published, created_by)`
-* `Question(quiz, text, type, points, negative_points)`
-* `Option(question, text, is_correct)`
-* `Attempt(user, quiz, started_at, submitted_at, score, status)`
-* `Answer(attempt, question, selected_options[])`
-* `ProctorEvent(attempt, kind, severity, note, ts)`
+This ensures fairness and consistency during attempts.
 
 ---
 
-## 🧩 API (sample endpoints)
+## 🔐 Security & Integrity
 
-```
-GET    /api/quizzes/
-POST   /api/quizzes/
-GET    /api/quizzes/{id}/
-POST   /api/quizzes/{id}/questions/
-POST   /api/attempts/{id}/answers/
-POST   /api/attempts/{id}/submit/
-POST   /proctoring/frame/           # receives image frames
-GET    /proctoring/events?attempt=  # instructor review
-```
+* CSRF protection (Django default)
+* Authenticated routes for quiz attempts and results
+* Tab-switch / fullscreen detection to prevent cheating
+* Time tracking handled on both client (JS) and server (validation)
+
+---
+
+## 🔮 Future Scope
+
+The following advanced features are **planned but not yet implemented**:
+
+* **Role Management** – Distinct dashboards and permissions for Admins/Instructors and Students  
+* **ML-Powered Proctoring** – Using webcam + OpenCV/MediaPipe for:
+  - Face detection and recognition  
+  - Multiple-face detection  
+  - Automatic warnings and submission on policy violations  
+* **Question Randomization & Pools** – Randomized question selection for each attempt  
+* **Advanced Analytics** – Per-question performance stats and export options  
+* **API Endpoints** – For integration with mobile apps or SPAs  
+* **Real-Time Monitoring** – Instructor live dashboard for ongoing attempts  
 
 ---
 
 ## 🧪 Testing
 
+Run built-in Django tests or use pytest (optional):
+
 ```bash
-pytest -q
-# or
 python manage.py test
 ```
-
-Recommended: factory\_boy, pytest-django, coverage.
 
 ---
 
 ## 📦 Deployment
 
-* **Docker**: Provide a `Dockerfile` and `docker-compose.yml` (Django + Postgres + Redis)
-* **Static files**: `collectstatic` to S3 or mounted volume
-* **Workers**: Run Celery worker/beat if using async tasks
-* **ASGI**: For realtime (Channels), use Daphne/Uvicorn behind Nginx
-
----
-
-## 🗺️ Roadmap
-
-* Question pools & randomized sections
-* Descriptive/subjective questions with rubric grading
-* Enhanced analytics and per‑tag difficulty
-* Mobile app (same API)
-
----
-
-## 🤝 Contributing
-
-PRs welcome! Please open an issue for discussion first. Follow conventional commits and run tests before pushing.
-
----
-
-## 📝 License
-
-Choose a license (e.g., MIT) and place it in `LICENSE`.
+* Production database: PostgreSQL or MySQL  
+* Static files: Use `collectstatic` for deployment  
+* Environment variables stored in `.env` (e.g., `SECRET_KEY`, `DEBUG`, etc.)  
+* Host using services like Render, Railway, or Heroku  
 
 ---
 
 ## 🙌 Acknowledgements
 
-* Django, DRF, OpenCV/MediaPipe/face-recognition community
-* Everyone who reported bugs & suggested features
+* [CS50 Web Programming with Python and JavaScript](https://cs50.harvard.edu/web/)
+* Django documentation and community
+* Open-source developers behind Django, Bootstrap, and JavaScript libraries used
