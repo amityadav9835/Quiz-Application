@@ -1,96 +1,14 @@
 {% extends "quiz_app/home.html" %}
 {% block title %}Sign Up{% endblock %}
 {% block content %}
-<style>
-  /* Full background with quiz vibe */
-.signup-wrapper {
-  min-height: 100vh;
-  background: url("https://images.unsplash.com/photo-1606326608690-4e0281b1e588?q=80&w=2070&auto=format&fit=crop") no-repeat center center fixed;
-  background-size: cover;
-  padding: 2rem;
-}
-
-/* Card */
-.signup-card {
-  border-radius: 20px;
-  overflow: hidden;
-  max-width: 950px;
-  width: 100%;
-  backdrop-filter: blur(6px);
-}
-
-/* Buttons with gradient */
-.btn-gradient {
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: white;
-  border: none;
-  border-radius: 25px;
-  font-weight: bold;
-  transition: 0.3s;
-}
-.btn-gradient:hover {
-  background: linear-gradient(135deg, #2575fc, #6a11cb);
-  transform: scale(1.05);
-}
-
-/* Social icons */
-.social-icons a {
-  color: #333;
-  font-size: 1.3rem;
-  transition: 0.3s;
-}
-.social-icons a:hover {
-  color: #2575fc;
-  transform: scale(1.2);
-}
-
-/* Right illustration section */
-.signup-illustration {
-  position: relative;
-  background: url("https://cdn.pixabay.com/photo/2017/08/30/01/05/quiz-2698152_1280.jpg") no-repeat center center;
-  background-size: cover;
-  text-align: center;
-  padding: 2rem;
-}
-
-/* Overlay effect */
-.signup-illustration .overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 60, 0.7);
-}
-.signup-illustration > div {
-  position: relative;
-  z-index: 2;
-}
-
-/* 🔹 Rounded input fields */
-form input,
-form select,
-form textarea {
-  border-radius: 50px !important;
-  padding: 10px 15px;
-  border: 1px solid #ccc;
-  transition: all 0.3s ease;
-}
-
-form input:focus,
-form select:focus,
-form textarea:focus {
-  border-color: #2575fc;
-  box-shadow: 0 0 6px rgba(37, 117, 252, 0.5);
-  outline: none;
-}
-</style>
 
 <div class="signup-wrapper d-flex justify-content-center align-items-center">
   <div class="card signup-card shadow-lg d-flex flex-row">
-    
-    <!-- Left Side (Form) -->
+
+    <!-- Left Form Section -->
     <div class="p-5 flex-fill bg-white">
       <h2 class="text-center mb-4 fw-bold text-primary">Create Account</h2>
 
-      <!-- Show form errors -->
       {% if form.errors %}
         <div class="alert alert-danger rounded-3">
           <ul class="mb-0">
@@ -103,25 +21,12 @@ form textarea:focus {
         </div>
       {% endif %}
 
-      <!-- Signup Form -->
-      <form method="post" class="mt-3">
+      <form method="post">
         {% csrf_token %}
-        <div class="mb-3">
-          {{ form.username.label_tag }}<br/>
-          {{ form.username }}
-        </div>
-        <div class="mb-3">
-          {{ form.email.label_tag }}
-          {{ form.email }}
-        </div>
-        <div class="mb-3">
-          {{ form.password1.label_tag }}<br/>
-          {{ form.password1 }}
-        </div>
-        <div class="mb-3">
-          {{ form.password2.label_tag }}
-          {{ form.password2 }}
-        </div>
+        <div class="mb-3">{{ form.username.label_tag }} {{ form.username }}</div>
+        <div class="mb-3">{{ form.email.label_tag }} {{ form.email }}</div>
+        <div class="mb-3">{{ form.password1.label_tag }} {{ form.password1 }}</div>
+        <div class="mb-3">{{ form.password2.label_tag }} {{ form.password2 }}</div>
 
         <div class="text-center mt-4">
           <button type="submit" class="btn btn-gradient px-5 py-2">Sign Up</button>
@@ -129,10 +34,9 @@ form textarea:focus {
       </form>
 
       <p class="text-center mt-3 text-muted">
-        Already have an account? <a href="{% url 'login' %}" class="fw-bold text-decoration-none">Login here</a>.
+        Already have an account? <a href="{% url 'login' %}" class="fw-bold">Login here</a>.
       </p>
 
-      <!-- Social Icons -->
       <div class="d-flex justify-content-center mt-4 social-icons">
         <a href="#" class="mx-2"><i class="fab fa-facebook fa-lg"></i></a>
         <a href="#" class="mx-2"><i class="fab fa-google fa-lg"></i></a>
@@ -141,18 +45,77 @@ form textarea:focus {
       </div>
     </div>
 
-    <!-- Right Side (Illustration) -->
+    <!-- Right Illustration -->
     <div class="flex-fill d-flex align-items-center justify-content-center signup-illustration">
       <div class="overlay"></div>
       <div class="text-center text-white">
         <h3 class="fw-bold">Welcome to Quiz Master 🎯</h3>
         <p class="lead">Challenge yourself, learn, and have fun!</p>
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
-             alt="Quiz Illustration" 
-             style="max-width: 70%; height: auto; margin-top: 1rem;">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+             alt="Quiz" style="max-width: 70%; margin-top: 1rem;">
       </div>
     </div>
 
   </div>
 </div>
+
+
+<style>
+.signup-wrapper {
+  min-height: 100vh;
+  background: url("https://images.unsplash.com/photo-1606326608690-4e0281b1e588?q=80&w=2070&auto=format&fit=crop")
+  no-repeat center center fixed;
+  background-size: cover;
+  padding: 2rem;
+}
+.signup-card {
+  border-radius: 20px;
+  overflow: hidden;
+  max-width: 950px;
+  width: 100%;
+  backdrop-filter: blur(6px);
+}
+.btn-gradient {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  border-radius: 25px;
+}
+.signup-illustration {
+  position: relative;
+  background: url("https://cdn.pixabay.com/photo/2017/08/30/01/05/quiz-2698152_1280.jpg")
+  no-repeat center center;
+  background-size: cover;
+  padding: 2rem;
+}
+.signup-illustration .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,60,0.7);
+}
+.signup-illustration > div { position: relative; z-index: 2; }
+
+/* Rounded Inputs */
+form input {
+  border-radius: 50px !important;
+  padding: 10px 15px;
+}
+
+/* =======================
+   RESPONSIVE DESIGN FIXES
+   ======================= */
+@media (max-width: 992px) {
+  .signup-card { flex-direction: column; max-width: 90%; }
+  .signup-illustration { height: 300px; }
+}
+@media (max-width: 768px) {
+  .signup-wrapper { padding: 1rem; }
+  .signup-card { flex-direction: column; }
+  .signup-illustration { min-height: 260px; }
+}
+@media (max-width: 480px) {
+  .btn-gradient { width: 100%; }
+  .signup-illustration { min-height: 220px; }
+}
+</style>
+
 {% endblock %}

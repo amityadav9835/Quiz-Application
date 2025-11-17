@@ -1,11 +1,28 @@
 {% extends "quiz_app/home.html" %}
+{% load static %}
+
 {% block title %}{{ quiz.title }} - Take Quiz{% endblock %}
 
 {% block content %}
+
+<!-- ------------------- FACE DETECTION CAMERA ------------------- -->
+<div style="text-align:center; margin-bottom:20px;">
+    <h4 style="color:white;">Face Detection Active</h4>
+
+    <video id="webcam" width="260" height="200" autoplay muted 
+           style="border:2px solid #ff7e29; border-radius:10px;">
+    </video>
+
+    <p id="face-status" style="font-weight:bold; color:#ff7e29;">
+        Detecting face...
+    </p>
+</div>
+
+<!-- ------------------- QUIZ UI ------------------- -->
 <div class="quiz-wrapper">
   <div class="quiz-container">
 
-    <!-- Quiz Header -->
+    <!-- Header -->
     <div class="quiz-header">
       <div class="quiz-progress">
         <span id="question-count">1</span> of {{ questions|length }}
@@ -13,235 +30,170 @@
       <div class="quiz-timer" id="timer">20</div>
     </div>
 
-    <!-- Quiz Title -->
     <h4 class="quiz-title">{{ quiz.title }}</h4>
     <p class="quiz-subtitle">Question <span id="qNumber">1</span> of {{ questions|length }}</p>
 
-    <!-- Quiz Form -->
+    <!-- FORM -->
     <form method="POST" action="{% url 'submit_quiz' quiz.id %}" id="quiz-form">
       {% csrf_token %}
-      {% if questions %}
-        {% for q in questions %}
-          <div class="question-card {% if not forloop.first %}d-none{% endif %}" id="question-{{ forloop.counter }}">
-            <p class="question-text">“{{ q.text }}”</p>
 
-            <div class="options">
-              <label class="option">
-                <input type="radio" name="question_{{ q.id }}" value="A">
-                <span>{{ q.option_a }}</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="question_{{ q.id }}" value="B">
-                <span>{{ q.option_b }}</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="question_{{ q.id }}" value="C">
-                <span>{{ q.option_c }}</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="question_{{ q.id }}" value="D">
-                <span>{{ q.option_d }}</span>
-              </label>
-            </div>
+      {% for q in questions %}
+      <div class="question-card {% if not forloop.first %}d-none{% endif %}" 
+           id="question-{{ forloop.counter }}">
 
-            <!-- Navigation Buttons -->
-            <div class="button-row">
-              {% if not forloop.first %}
-                <button type="button" class="btn btn-secondary prev-btn" data-current="{{ forloop.counter }}">Previous</button>
-              {% endif %}
-              {% if not forloop.last %}
-                <button type="button" class="btn btn-next next-btn" data-current="{{ forloop.counter }}">Next</button>
-              {% else %}
-                <button type="submit" class="btn btn-submit">Submit Quiz</button>
-              {% endif %}
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <p>No questions available for this quiz.</p>
-      {% endif %}
+        <p class="question-text">“{{ q.text }}”</p>
+
+        <div class="options">
+          <label class="option"><input type="radio" name="question_{{ q.id }}" value="A"><span>{{ q.option_a }}</span></label>
+          <label class="option"><input type="radio" name="question_{{ q.id }}" value="B"><span>{{ q.option_b }}</span></label>
+          <label class="option"><input type="radio" name="question_{{ q.id }}" value="C"><span>{{ q.option_c }}</span></label>
+          <label class="option"><input type="radio" name="question_{{ q.id }}" value="D"><span>{{ q.option_d }}</span></label>
+        </div>
+
+        <div class="button-row">
+          {% if not forloop.first %}
+          <button type="button" class="btn btn-secondary prev-btn" data-current="{{ forloop.counter }}">
+            Previous
+          </button>
+          {% endif %}
+
+          {% if not forloop.last %}
+          <button type="button" class="btn btn-next next-btn" data-current="{{ forloop.counter }}">
+            Next
+          </button>
+          {% else %}
+          <button type="submit" class="btn btn-submit">Submit Quiz</button>
+          {% endif %}
+        </div>
+
+      </div>
+      {% endfor %}
     </form>
+
   </div>
 </div>
 
-<!-- CSS Styling -->
+<!-- ------------------- CSS ------------------- -->
 <style>
   body {
     background: linear-gradient(180deg, #5B2EFF, #2E1B80);
-    font-family: 'Poppins', sans-serif;
-    color: #fff;
+    color: white;
+    font-family: Poppins, sans-serif;
   }
-
-  .quiz-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 2rem;
-  }
-
-  .quiz-container {
-    background: #1D1A39;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 500px;
-    padding: 2rem;
-    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.5);
-  }
-
-  .quiz-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  }
-
-  .quiz-progress {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.4rem 1rem;
-    border-radius: 12px;
-    font-size: 0.9rem;
-  }
-
-  .quiz-timer {
-    width: 50px;
-    height: 50px;
-    background: #ff7e29;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-  }
-
-  .quiz-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-    text-align: center;
-    color: #FF7E29;
-  }
-
-  .quiz-subtitle {
-    text-align: center;
-    color: #aaa;
-    margin-bottom: 1.5rem;
-  }
-
-  .question-text {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-  }
-
-  .options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .option {
-    background: #2A2550;
-    border-radius: 12px;
-    padding: 12px 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: background 0.2s;
-  }
-
-  .option:hover {
-    background: #3C3575;
-  }
-
-  .option input {
-    display: none;
-  }
-
-  .option input:checked + span {
-    background: linear-gradient(90deg, #ff7e29, #ff512f);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: bold;
-  }
-
-  .button-row {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
-  }
-
-  .btn {
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-  }
-
-  .btn-secondary {
-    background: #444;
-    color: #fff;
-  }
-
-  .btn-next {
-    background: #ff7e29;
-    color: #fff;
-  }
-
-  .btn-submit {
-    background: #00C896;
-    color: #fff;
-    width: 100%;
-  }
-
-  .btn:hover {
-    opacity: 0.85;
-  }
+  .quiz-wrapper { display:flex; justify-content:center; padding:30px; }
+  .quiz-container { background:#1D1A39; padding:25px; border-radius:20px; width:100%; max-width:520px; }
+  .quiz-header { display:flex; justify-content:space-between; align-items:center; }
+  .quiz-progress { background:#ffffff20; padding:6px 15px; border-radius:12px; }
+  .quiz-timer { width:50px; height:50px; background:#ff7e29; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; }
+  .quiz-title { text-align:center; color:#ff7e29; margin-top:15px; }
+  .quiz-subtitle { text-align:center; color:#ccc; margin-bottom:20px; }
+  .options { display:flex; flex-direction:column; gap:10px; }
+  .option { background:#2A2550; padding:12px; border-radius:10px; cursor:pointer; }
+  .option:hover { background:#3C3575; }
+  .option input { display:none; }
+  .button-row { margin-top:20px; display:flex; justify-content:space-between; }
+  .btn { padding:10px 20px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; }
+  .btn-next { background:#ff7e29; color:white; }
+  .btn-secondary { background:#555; color:white; }
+  .btn-submit { background:#00C896; color:white; width:100%; }
 </style>
 
-<!-- JavaScript -->
-<script>
-  // Timer and Auto-Submit Logic
-  let seconds = 20;  // or {{ quiz.time_limit|default:1 }} * 60
-  const timerDisplay = document.getElementById('timer');
-  const quizForm = document.getElementById('quiz-form');
-  const totalQuestions = {{ questions|length }};
-  let currentQuestion = 1;
+<!-- ------------------- FACE API SCRIPT ------------------- -->
+<script src="https://unpkg.com/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
-  function updateTimer() {
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    timerDisplay.textContent = sec.toString().padStart(2, '0');
+<script>
+/* ------------------ FACE DETECTION SYSTEM ------------------ */
+const video = document.getElementById("webcam");
+const faceStatus = document.getElementById("face-status");
+let noFaceCounter = 0;
+
+async function startFaceSystem() {
+
+    // FIXED: Load from Django static folder
+    await faceapi.nets.tinyFaceDetector.loadFromUri("{% static 'models' %}");
+
+    // Start camera
+    navigator.mediaDevices.getUserMedia({ video:true })
+        .then(stream => video.srcObject = stream)
+        .catch(() => alert("Camera access required!"));
+}
+
+video.addEventListener("play", () => {
+
+    const detect = async () => {
+
+        const detections = await faceapi.detectAllFaces(
+            video,
+            new faceapi.TinyFaceDetectorOptions()
+        );
+
+        if (detections.length > 0) {
+            faceStatus.textContent = "Face detected ✔";
+            faceStatus.style.color = "#00ff99";
+            noFaceCounter = 0;
+        } else {
+            faceStatus.textContent = "No face detected ❌";
+            faceStatus.style.color = "#ff4444";
+            noFaceCounter++;
+
+            if (noFaceCounter >= 5) {
+                alert("⚠ No face detected for too long! Submitting quiz.");
+                document.getElementById("quiz-form").submit();
+            }
+        }
+
+        setTimeout(detect, 700);
+    };
+
+    detect();
+});
+
+startFaceSystem();
+
+/* ------------------ TIMER ------------------ */
+let seconds = 20;
+const timerDisplay = document.getElementById("timer");
+const quizForm = document.getElementById("quiz-form");
+
+function startTimer() {
+    timerDisplay.textContent = seconds;
 
     if (seconds > 0) {
-      seconds--;
-      setTimeout(updateTimer, 1000);
+        seconds--;
+        setTimeout(startTimer, 1000);
     } else {
-      alert("⏰ Time is up! Submitting your quiz...");
-      quizForm.submit(); // Auto-submit even if not all answered
+        alert("⏰ Time's up! Submitting quiz.");
+        quizForm.submit();
     }
-  }
+}
+startTimer();
 
-  updateTimer();
+/* ------------------ QUESTION NAVIGATION ------------------ */
+let currentQuestion = 1;
 
-  // Navigation Logic
-  document.addEventListener("click", function(e) {
+document.addEventListener("click", (e) => {
+
     if (e.target.classList.contains("next-btn")) {
-      let curr = parseInt(e.target.dataset.current);
-      document.getElementById(`question-${curr}`).classList.add("d-none");
-      currentQuestion = curr + 1;
-      document.getElementById(`question-${currentQuestion}`).classList.remove("d-none");
-      document.getElementById("qNumber").textContent = currentQuestion;
-      document.getElementById("question-count").textContent = currentQuestion;
+        let curr = parseInt(e.target.dataset.current);
+        document.getElementById(`question-${curr}`).classList.add("d-none");
+        currentQuestion = curr + 1;
+
+        document.getElementById(`question-${currentQuestion}`).classList.remove("d-none");
+        document.getElementById("qNumber").textContent = currentQuestion;
+        document.getElementById("question-count").textContent = currentQuestion;
     }
+
     if (e.target.classList.contains("prev-btn")) {
-      let curr = parseInt(e.target.dataset.current);
-      document.getElementById(`question-${curr}`).classList.add("d-none");
-      currentQuestion = curr - 1;
-      document.getElementById(`question-${currentQuestion}`).classList.remove("d-none");
-      document.getElementById("qNumber").textContent = currentQuestion;
-      document.getElementById("question-count").textContent = currentQuestion;
+        let curr = parseInt(e.target.dataset.current);
+        document.getElementById(`question-${curr}`).classList.add("d-none");
+        currentQuestion = curr - 1;
+
+        document.getElementById(`question-${currentQuestion}`).classList.remove("d-none");
+        document.getElementById("qNumber").textContent = currentQuestion;
+        document.getElementById("question-count").textContent = currentQuestion;
     }
-  });
+
+});
 </script>
+
 {% endblock %}
