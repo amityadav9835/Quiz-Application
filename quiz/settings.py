@@ -121,6 +121,10 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = '/home/amit9973/Quiz-Application/staticfiles/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/home/amit9973/Quiz-Application/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
