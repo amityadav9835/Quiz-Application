@@ -2,26 +2,99 @@
 {% block title %}Quiz Result - {{ quiz.title }}{% endblock %}
 
 {% block content %}
+<style>
+  /* Background gradient same as navbar theme */
+  body {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    min-height: 100vh;
+    color: #fff;
+  }
+
+  .result-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2.5rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    color: #fff;
+  }
+
+  .result-card h2 {
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .result-card h4 {
+    color: #e0e0e0;
+  }
+
+  /* Stylish progress bar */
+  .progress {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    font-weight: 600;
+    font-size: 16px;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    color: #fff;
+    transition: width 1s ease;
+  }
+
+  /* Button styles matching theme */
+  .btn-theme {
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-theme:hover {
+    background: linear-gradient(135deg, #feb47b, #ff7e5f);
+    color: white;
+  }
+
+  .btn-outline-light {
+    border: 2px solid white;
+    color: white;
+    font-weight: 500;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-light:hover {
+    background: white;
+    color: #2575fc;
+  }
+</style>
+
 <div class="container mt-5 text-center">
-  <div class="card shadow p-4">
+  <div class="result-card mx-auto" style="max-width: 600px;">
     <h2 class="mb-3">🎉 Quiz Completed!</h2>
     <h4 class="mb-4">{{ quiz.title }}</h4>
 
-    <p class="lead">
+    <p class="lead mb-4">
       You scored <strong>{{ score }}</strong> out of <strong>{{ total }}</strong>
     </p>
 
-   <div class="progress my-4" style="height: 30px;">
-  <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
-       style="width: {{ percentage|floatformat:0 }}%;" 
-       aria-valuenow="{{ score }}" aria-valuemin="0" aria-valuemax="{{ total }}">
-    {{ score }}/{{ total }}
-  </div>
-</div>
+    <!-- Progress bar -->
+    <div class="progress mb-4" style="height: 30px;">
+      <div class="progress-bar progress-bar-striped" role="progressbar"
+           style="width: {{ percentage|floatformat:0 }}%;" 
+           aria-valuenow="{{ score }}" aria-valuemin="0" aria-valuemax="{{ total }}">
+        {{ score }}/{{ total }}
+      </div>
+    </div>
 
-    <div class="mt-4">
-      <a href="{% url 'dashboard' %}" class="btn btn-outline-primary me-2">Back to Dashboard</a>
-      <a href="{% url 'quiz_detail' quiz.id %}" class="btn btn-outline-secondary">Review Quiz</a>
+    <!-- Action Buttons -->
+    <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
+      <a href="{% url 'dashboard' %}" class="btn-outline-light px-4 py-2">🏠 Back to Dashboard</a>
+      <a href="{% url 'quiz_detail' quiz.id %}" class="btn-theme px-4 py-2">🔍 Review Quiz</a>
     </div>
   </div>
 </div>

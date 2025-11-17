@@ -2,175 +2,245 @@
 {% block title %}{{ quiz.title }} - Take Quiz{% endblock %}
 
 {% block content %}
-<div class="quiz-bg">
-  <div id="x1" class="container mt-4">
+<div class="quiz-wrapper">
+  <div class="quiz-container">
 
-    <!-- Quiz Header with Subject and Navigation -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="fw-bold">{{ quiz.title }}</h5>
-      <div id="timer-container" class="text-end d-none">
-        <span class="fw-bold text-danger" id="timer"></span>
+    <!-- Quiz Header -->
+    <div class="quiz-header">
+      <div class="quiz-progress">
+        <span id="question-count">1</span> of {{ questions|length }}
       </div>
+      <div class="quiz-timer" id="timer">20</div>
     </div>
 
-    <!-- Question Navigation -->
-    <div class="d-flex justify-content-center mb-4">
-      {% for q in questions %}
-        <div class="circle-nav mx-1 {% if forloop.first %}active{% endif %}" id="nav-{{ forloop.counter }}">
-          {{ forloop.counter }}
-        </div>
-      {% endfor %}
-    </div>
-
-    <!-- Start Button -->
-    <div style="text-align:center;" id="start-container" class="text-center">
-      <button class="btn btn-primary btn-lg px-5 py-2" onclick="startQuiz()">Start Quiz</button>
-    </div>
+    <!-- Quiz Title -->
+    <h4 class="quiz-title">{{ quiz.title }}</h4>
+    <p class="quiz-subtitle">Question <span id="qNumber">1</span> of {{ questions|length }}</p>
 
     <!-- Quiz Form -->
-    <form method="POST" action="{% url 'submit_quiz' quiz.id %}" id="quiz-form" class="d-none">
+    <form method="POST" action="{% url 'submit_quiz' quiz.id %}" id="quiz-form">
       {% csrf_token %}
       {% if questions %}
         {% for q in questions %}
-          <div class="question-card d-none" id="question-{{ forloop.counter }}">
-            <p class="fw-bold fs-5">{{ q.text }}</p>
-            <p class="text-muted small">Choose your answer from below</p>
+          <div class="question-card {% if not forloop.first %}d-none{% endif %}" id="question-{{ forloop.counter }}">
+            <p class="question-text">“{{ q.text }}”</p>
 
-            <div class="list-group mt-3">
-              <input type="radio" class="btn-check" name="question_{{ q.id }}" id="q{{ q.id }}A" value="A" required>
-              <label class="list-group-item list-group-item-action option-label" for="q{{ q.id }}A">
-                <strong>A</strong> {{ q.option_a }}
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="question_{{ q.id }}" value="A">
+                <span>{{ q.option_a }}</span>
               </label>
-
-              <input type="radio" class="btn-check" name="question_{{ q.id }}" id="q{{ q.id }}B" value="B">
-              <label class="list-group-item list-group-item-action option-label" for="q{{ q.id }}B">
-                <strong>B</strong> {{ q.option_b }}
+              <label class="option">
+                <input type="radio" name="question_{{ q.id }}" value="B">
+                <span>{{ q.option_b }}</span>
               </label>
-
-              <input type="radio" class="btn-check" name="question_{{ q.id }}" id="q{{ q.id }}C" value="C">
-              <label class="list-group-item list-group-item-action option-label" for="q{{ q.id }}C">
-                <strong>C</strong> {{ q.option_c }}
+              <label class="option">
+                <input type="radio" name="question_{{ q.id }}" value="C">
+                <span>{{ q.option_c }}</span>
               </label>
-
-              <input type="radio" class="btn-check" name="question_{{ q.id }}" id="q{{ q.id }}D" value="D">
-              <label class="list-group-item list-group-item-action option-label" for="q{{ q.id }}D">
-                <strong>D</strong> {{ q.option_d }}
+              <label class="option">
+                <input type="radio" name="question_{{ q.id }}" value="D">
+                <span>{{ q.option_d }}</span>
               </label>
             </div>
 
             <!-- Navigation Buttons -->
-            <div class="d-flex justify-content-between mt-4">
+            <div class="button-row">
               {% if not forloop.first %}
                 <button type="button" class="btn btn-secondary prev-btn" data-current="{{ forloop.counter }}">Previous</button>
               {% endif %}
               {% if not forloop.last %}
-                <button type="button" class="btn btn-primary next-btn ms-auto" data-current="{{ forloop.counter }}">Next</button>
+                <button type="button" class="btn btn-next next-btn" data-current="{{ forloop.counter }}">Next</button>
               {% else %}
-                <button type="submit" class="btn btn-success ms-auto">Submit Quiz</button>
+                <button type="submit" class="btn btn-submit">Submit Quiz</button>
               {% endif %}
             </div>
           </div>
         {% endfor %}
       {% else %}
-        <p class="text-center">No questions available for this quiz.</p>
+        <p>No questions available for this quiz.</p>
       {% endif %}
     </form>
   </div>
 </div>
 
-<!-- Custom Styles -->
+<!-- CSS Styling -->
 <style>
-  /* Full page background */
-  .quiz-bg {
+  body {
+    background: linear-gradient(180deg, #5B2EFF, #2E1B80);
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+  }
+
+  .quiz-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
-    background: url("https://images.unsplash.com/photo-1606326608690-4e0281b1e588?q=80&w=2070&auto=format&fit=crop") no-repeat center center fixed;
-    background-size: cover;
     padding: 2rem;
   }
 
-  .circle-nav {
-    width: 40px;
-    height: 40px;
+  .quiz-container {
+    background: #1D1A39;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .quiz-progress {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.4rem 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+
+  .quiz-timer {
+    width: 50px;
+    height: 50px;
+    background: #ff7e29;
     border-radius: 50%;
-    background: #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
+  }
+
+  .quiz-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: center;
+    color: #FF7E29;
+  }
+
+  .quiz-subtitle {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 1.5rem;
+  }
+
+  .question-text {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    background: #2A2550;
+    border-radius: 12px;
+    padding: 12px 16px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
   }
 
-  .circle-nav.active {
-    background: #ff7e5f;
+  .option:hover {
+    background: #3C3575;
+  }
+
+  .option input {
+    display: none;
+  }
+
+  .option input:checked + span {
+    background: linear-gradient(90deg, #ff7e29, #ff512f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+  }
+
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .btn-secondary {
+    background: #444;
     color: #fff;
   }
 
-  .option-label {
-    border-radius: 10px;
-    margin-bottom: 10px;
-    font-size: 16px;
-    padding: 12px;
+  .btn-next {
+    background: #ff7e29;
+    color: #fff;
   }
 
-  .btn-check:checked + .option-label {
-    background-color: #ff7e5f;
+  .btn-submit {
+    background: #00C896;
     color: #fff;
+    width: 100%;
+  }
+
+  .btn:hover {
+    opacity: 0.85;
   }
 </style>
 
 <!-- JavaScript -->
 <script>
-  let seconds = {{ quiz.time_limit|default:10 }} * 60;
-  let currentQuestion = 1;
-  const totalQuestions = {{ questions|length }};
+  // Timer and Auto-Submit Logic
+  let seconds = 20;  // or {{ quiz.time_limit|default:1 }} * 60
   const timerDisplay = document.getElementById('timer');
   const quizForm = document.getElementById('quiz-form');
-
-  function startQuiz() {
-    document.getElementById('start-container').classList.add('d-none');
-    quizForm.classList.remove('d-none');
-    document.getElementById('timer-container').classList.remove('d-none');
-    document.getElementById(`question-${currentQuestion}`).classList.remove('d-none');
-    updateNav();
-    updateTimer();
-  }
+  const totalQuestions = {{ questions|length }};
+  let currentQuestion = 1;
 
   function updateTimer() {
     const min = Math.floor(seconds / 60);
     const sec = seconds % 60;
-    timerDisplay.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+    timerDisplay.textContent = sec.toString().padStart(2, '0');
+
     if (seconds > 0) {
       seconds--;
       setTimeout(updateTimer, 1000);
     } else {
-      alert("Time is up! Submitting your quiz.");
-      quizForm.submit();
+      alert("⏰ Time is up! Submitting your quiz...");
+      quizForm.submit(); // Auto-submit even if not all answered
     }
   }
 
-  function updateNav() {
-    document.querySelectorAll(".circle-nav").forEach((el, idx) => {
-      el.classList.remove("active");
-      if (idx + 1 === currentQuestion) {
-        el.classList.add("active");
-      }
-    });
-  }
+  updateTimer();
 
+  // Navigation Logic
   document.addEventListener("click", function(e) {
     if (e.target.classList.contains("next-btn")) {
       let curr = parseInt(e.target.dataset.current);
       document.getElementById(`question-${curr}`).classList.add("d-none");
       currentQuestion = curr + 1;
       document.getElementById(`question-${currentQuestion}`).classList.remove("d-none");
-      updateNav();
+      document.getElementById("qNumber").textContent = currentQuestion;
+      document.getElementById("question-count").textContent = currentQuestion;
     }
     if (e.target.classList.contains("prev-btn")) {
       let curr = parseInt(e.target.dataset.current);
       document.getElementById(`question-${curr}`).classList.add("d-none");
       currentQuestion = curr - 1;
       document.getElementById(`question-${currentQuestion}`).classList.remove("d-none");
-      updateNav();
+      document.getElementById("qNumber").textContent = currentQuestion;
+      document.getElementById("question-count").textContent = currentQuestion;
     }
   });
 </script>

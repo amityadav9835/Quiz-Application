@@ -2,15 +2,121 @@
 {% block title %}{{ quiz.title }} - Your Answers{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <h2 class="text-center mb-4">{{ quiz.title }} - Your Answers</h2>
+<style>
+  /* Container styling */
+  .results-container {
+    max-width: 800px;
+    margin: 6rem auto;
+    background: linear-gradient(135deg, #4b0082, #8a2be2);
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    padding: 40px 30px;
+    transition: background 0.4s ease;
+  }
 
-  <ol class="list-group list-group-numbered">
+  body.light-theme .results-container {
+    background: #ffffff;
+    color: #333;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  h2.results-title {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #fff;
+  }
+  body.light-theme h2.results-title {
+    color: #333;
+  }
+
+  /* Question card */
+  .question-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .question-card:hover {
+    transform: scale(1.02);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  body.light-theme .question-card {
+    background: #f8f9fa;
+  }
+
+  .question-card strong {
+    color: #ffcc00;
+  }
+  body.light-theme .question-card strong {
+    color: #6f42c1;
+  }
+
+  /* Option list */
+  .option-list li {
+    list-style: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 5px 0;
+    transition: background 0.3s ease;
+  }
+
+  .option-list li.fw-bold.text-primary {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid #ffcc00;
+  }
+  body.light-theme .option-list li.fw-bold.text-primary {
+    background-color: #e9ecef;
+    border-left: 4px solid #6f42c1;
+  }
+
+  /* Correct / wrong colors */
+  .correct {
+    color: #00ff99;
+    font-weight: bold;
+  }
+  .incorrect {
+    color: #ff6666;
+    font-weight: bold;
+  }
+  body.light-theme .correct {
+    color: #198754;
+  }
+  body.light-theme .incorrect {
+    color: #dc3545;
+  }
+
+  /* Back button */
+  .back-btn {
+    background: linear-gradient(90deg, #ff6600, #ff9900);
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .back-btn:hover {
+    background: linear-gradient(90deg, #ff9900, #ff6600);
+    transform: scale(1.05);
+  }
+
+</style>
+
+<div class="results-container">
+  <h2 class="results-title">{{ quiz.title }} - Your Answers</h2>
+
+  <ol class="list-unstyled">
     {% for item in question_data %}
-    <li class="list-group-item">
+    <li class="question-card">
       <p><strong>Q{{ forloop.counter }}:</strong> {{ item.question.text }}</p>
 
-      <ul class="mb-2">
+      <ul class="option-list mb-2">
         <li {% if item.selected == 'A' %}class="fw-bold text-primary"{% endif %}>A: {{ item.question.option_a }}</li>
         <li {% if item.selected == 'B' %}class="fw-bold text-primary"{% endif %}>B: {{ item.question.option_b }}</li>
         <li {% if item.selected == 'C' %}class="fw-bold text-primary"{% endif %}>C: {{ item.question.option_c }}</li>
@@ -22,20 +128,20 @@
         Option {{ item.selected|default:"Not answered" }}
         {% if item.selected %}
           {% if item.is_correct %}
-            ✅ Correct
+            <span class="correct">✅ Correct</span>
           {% else %}
-            ❌ Incorrect
+            <span class="incorrect">❌ Incorrect</span>
           {% endif %}
         {% endif %}
       </p>
 
-      <p class="text-success"><strong>Correct Answer:</strong> Option {{ item.question.correct_option }}</p>
+      <p class="correct"><strong>Correct Answer:</strong> Option {{ item.question.correct_option }}</p>
     </li>
     {% endfor %}
   </ol>
 
   <div class="text-center mt-4">
-    <a href="{% url 'quiz_summary' %}" class="btn btn-secondary">Back to Summary</a>
+    <a href="{% url 'quiz_summary' %}" class="btn back-btn">⬅ Back to Summary</a>
   </div>
 </div>
 {% endblock %}
