@@ -141,7 +141,7 @@
       <div class="hero-content">
         <h1>Instant Reports</h1>
         <p>Analyze results with detailed insights</p>
-        <a style="text-decoration:none;" href="{% url 'dashboard' %}" class="hero-btn">View Results</a>
+        <a style="text-decoration:none;" href="{% url 'quiz_summary' %}" class="hero-btn">View Results</a>
       </div>
     </div>
   </div>
@@ -175,8 +175,9 @@
       </a>
     </div>
     <div class="col-md-4 col-sm-6 feature-box">
-      <img src="https://img.icons8.com/color/96/000000/combo-chart.png" alt="Analyze Results">
-      <h3>Analyze</h3>
+      <a href="{% url 'quiz_summary' %}" style="text-decoration: none; color: inherit;">
+        <img src="https://img.icons8.com/color/96/000000/combo-chart.png" alt="Analyze Results">
+      <h3>Analyze</h3> </a>
       <p>Instantly grade results and generate powerful reports for deeper insights.</p>
     </div>
   </div>
