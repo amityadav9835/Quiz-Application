@@ -44,10 +44,27 @@
         <p class="question-text">“{{ q.text }}”</p>
 
         <div class="options">
-          <label class="option"><input type="radio" name="question_{{ q.id }}" value="A"><span>{{ q.option_a }}</span></label>
-          <label class="option"><input type="radio" name="question_{{ q.id }}" value="B"><span>{{ q.option_b }}</span></label>
-          <label class="option"><input type="radio" name="question_{{ q.id }}" value="C"><span>{{ q.option_c }}</span></label>
-          <label class="option"><input type="radio" name="question_{{ q.id }}" value="D"><span>{{ q.option_d }}</span></label>
+
+          <label class="option">
+            <input type="radio" name="question_{{ q.id }}" value="A">
+            <span>{{ q.option_a }}</span>
+          </label>
+
+          <label class="option">
+            <input type="radio" name="question_{{ q.id }}" value="B">
+            <span>{{ q.option_b }}</span>
+          </label>
+
+          <label class="option">
+            <input type="radio" name="question_{{ q.id }}" value="C">
+            <span>{{ q.option_c }}</span>
+          </label>
+
+          <label class="option">
+            <input type="radio" name="question_{{ q.id }}" value="D">
+            <span>{{ q.option_d }}</span>
+          </label>
+
         </div>
 
         <div class="button-row">
@@ -73,13 +90,14 @@
   </div>
 </div>
 
-<!-- ------------------- CSS ------------------- -->
+<!-- ------------------- CSS (FIXED!) ------------------- -->
 <style>
   body {
     background: linear-gradient(180deg, #5B2EFF, #2E1B80);
     color: white;
     font-family: Poppins, sans-serif;
   }
+
   .quiz-wrapper { display:flex; justify-content:center; padding:30px; }
   .quiz-container { background:#1D1A39; padding:25px; border-radius:20px; width:100%; max-width:520px; }
   .quiz-header { display:flex; justify-content:space-between; align-items:center; }
@@ -87,15 +105,52 @@
   .quiz-timer { width:50px; height:50px; background:#ff7e29; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; }
   .quiz-title { text-align:center; color:#ff7e29; margin-top:15px; }
   .quiz-subtitle { text-align:center; color:#ccc; margin-bottom:20px; }
-  .options { display:flex; flex-direction:column; gap:10px; }
-  .option { background:#2A2550; padding:12px; border-radius:10px; cursor:pointer; }
-  .option:hover { background:#3C3575; }
-  .option input { display:none; }
+
+  /* FIXED OPTION STYLES */
+  .options { display:flex; flex-direction:column; gap:12px; }
+
+  .option {
+    background:#2A2550;
+    padding:14px;
+    border-radius:10px;
+    cursor:pointer;
+    position:relative;
+    transition:0.2s;
+    display:flex;
+    align-items:center;
+  }
+
+  .option:hover {
+    background:#3C3575;
+  }
+
+  /* FIXED: Keep input clickable but invisible */
+  .option input {
+    position:absolute;
+    left:12px;
+    width:18px;
+    height:18px;
+    opacity:0;
+    cursor:pointer;
+  }
+
+  .option span {
+    margin-left:35px;
+    font-size:15px;
+  }
+
+  /* Highlight selected option */
+  .option input:checked + span {
+    color:#00ffcc;
+    font-weight:bold;
+  }
+
   .button-row { margin-top:20px; display:flex; justify-content:space-between; }
   .btn { padding:10px 20px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; }
   .btn-next { background:#ff7e29; color:white; }
   .btn-secondary { background:#555; color:white; }
   .btn-submit { background:#00C896; color:white; width:100%; }
+
 </style>
 
 <!-- ------------------- FACE API SCRIPT ------------------- -->
@@ -108,11 +163,7 @@ const faceStatus = document.getElementById("face-status");
 let noFaceCounter = 0;
 
 async function startFaceSystem() {
-
-    // FIXED: Load from Django static folder
     await faceapi.nets.tinyFaceDetector.loadFromUri("{% static 'models' %}");
-
-    // Start camera
     navigator.mediaDevices.getUserMedia({ video:true })
         .then(stream => video.srcObject = stream)
         .catch(() => alert("Camera access required!"));
@@ -121,7 +172,6 @@ async function startFaceSystem() {
 video.addEventListener("play", () => {
 
     const detect = async () => {
-
         const detections = await faceapi.detectAllFaces(
             video,
             new faceapi.TinyFaceDetectorOptions()
@@ -141,7 +191,6 @@ video.addEventListener("play", () => {
                 document.getElementById("quiz-form").submit();
             }
         }
-
         setTimeout(detect, 700);
     };
 
